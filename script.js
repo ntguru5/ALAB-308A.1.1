@@ -1,4 +1,27 @@
+/**  Part 1: Stack Overflow
+Declare a global counter variable.
+Create a simple function that increments the variable, and then calls itself recursively.
+Surround the initial function call in a try/catch block.
+Within the catch, log the error and the value of the counter variable.
+*/
+let counter = 0;
+
+function recursiveCall() {
+    counter++;  // Increment the counter for each call
+    recursiveCall();  // Recursive call
+}
+
+try {
+    recursiveCall();  // Start the recursion
+} catch (error) {
+    console.error('Stack overflow error:', error.message);  // Log the stack overflow error
+    console.log('Recursion depth before overflow:', counter);  // Log the recursion depth
+}
+
+
 /**
+ * CodeSandbox Example
+ *
  * Step One: write the recursive function.
  *
  * Here, we create a function that calculates
