@@ -1,8 +1,8 @@
 /**  Part 1: Stack Overflow
-Declare a global counter variable.
-Create a simple function that increments the variable, and then calls itself recursively.
-Surround the initial function call in a try/catch block.
-Within the catch, log the error and the value of the counter variable.
+* Declare a global counter variable.
+* Create a simple function that increments the variable, and then calls itself recursively.
+* Surround the initial function call in a try/catch block.
+* Within the catch, log the error and the value of the counter variable.
 */
 let counter = 0;
 
@@ -18,6 +18,47 @@ try {
     console.log('Recursion depth before overflow:', counter);  // Log the recursion depth
 }
 
+/**
+ * Part 2: Trampolines
+ * Write a recursive function that completely flattens an array of nested arrays,
+ * regardless of how deeply nested the arrays are.
+ * Once your recursive function is complete, trampoline it.
+ */
+
+// Recursive function to flatten array
+const flattenArray = (arr) => {
+    return arr.reduce((acc, val) => {
+        return Array.isArray(val) ? acc.concat(flattenArray(val)) : acc.concat(val);
+    }, []);
+}
+
+// Modify the recursive function for trampolining
+const flattenArrayTrampoline = (arr, result = []) => {
+    if (arr.length === 0) return result;  // Base case: when array is fully processed
+    const [first, ...rest] = arr;
+
+    if (Array.isArray(first)) {
+        return () => flattenArrayTrampoline(first.concat(rest), result);
+    } else {
+        return () => flattenArrayTrampoline(rest, result.concat(first));
+    }
+}
+
+// Trampoline function
+const trampoline = (fn, ...args) => {
+    let result = fn(...args);
+    while (typeof result === "function") {
+        result = result();
+    }
+    return result;
+}
+
+// Testing function
+const nestedArray = [1, [2, [3, [4, [5, [6, [7, [8, [9, [10]]]]]]]]]];
+console.log(trampoline(flattenArrayTrampoline, nestedArray));
+
+
+
 
 /**
  * CodeSandbox Example
@@ -29,10 +70,10 @@ try {
  * is the product of all positive integers
  * less than or equal to the number, n.
  */
-const factorial = (n) => {
-    if (n === 0) return 1; // The base case, to stop recursion
-    return n * factorial(n - 1); // The recursive call
-}
+// const factorial = (n) => {
+//     if (n === 0) return 1; // The base case, to stop recursion
+//     return n * factorial(n - 1); // The recursive call
+// }
 
 /**
  * If we were to call the above with a number as
@@ -50,10 +91,10 @@ const factorial = (n) => {
 * This prevents the function from being added
 * directly to the call stack.
 */
-const facto = (n, a = 1) => {
-    if (n === 0) return a;
-    return () => facto(n - 1, n * a);
-}
+// const facto = (n, a = 1) => {
+//     if (n === 0) return a;
+//     return () => facto(n - 1, n * a);
+// }
 
 /**
 * Step Three: create a trampoline function.
@@ -66,13 +107,13 @@ const facto = (n, a = 1) => {
 * maintaining the declarative approach provided by
 * recursive functions.
 */
-const trampoline = (f, ...args) => {
-let result = f(...args);
-while (typeof result === "function") {
-    result = result();
-}
-return result;
-}
+// const trampoline = (f, ...args) => {
+// let result = f(...args);
+// while (typeof result === "function") {
+//     result = result();
+// }
+// return result;
+// }
 
 /**
  * Now, we can call the factorial function with as high
@@ -83,4 +124,4 @@ return result;
  * Unfortunately, both of these are the case here, but
  * the principle of trampolining holds!
  */
-console.log(trampoline(facto(10000)))
+// console.log(trampoline(facto(10000)))
